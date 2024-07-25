@@ -3,12 +3,14 @@ import reactLogo from './assets/react.svg'
 import appLogo from '/favicon.svg'
 import PWABadge from './PWABadge.jsx'
 import './App.css'
-
+import { Button } from "@/components/ui/button"
+ 
 function App() {
   const [count, setCount] = useState(0)
 
   return (
     <>
+      This has crazy speed
       <div>
         <a href="https://vitejs.dev" target="_blank">
           <img src={appLogo} className="logo" alt="cardano-lightning-demo logo" />
@@ -18,6 +20,9 @@ function App() {
         </a>
       </div>
       <h1>cardano-lightning-demo</h1>
+      <div>
+        <Button>Click me</Button>
+      </div>
       <div className="card">
         <button onClick={() => setCount((count) => count + 1)}>
           count is {count}

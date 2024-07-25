@@ -43,6 +43,7 @@
             packages = with pkgs; [
               nodePackages_latest.nodejs
               nodePackages_latest.pnpm
+              nodePackages.typescript
               nodePackages_latest.typescript-language-server
             ];
           };
