@@ -42,11 +42,11 @@ And selecting the default options.
 
 ### Troubleshooting
 
-#### Issues in firefox
+#### Firefox no-show
 
-Connection hangs with nothing rendered.
+Issue: Connection hangs with nothing rendered.
 
-Switching the port `packages.json`
+Solution: Switching the port `packages.json`
 ```json 
 {
   ...
