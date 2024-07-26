@@ -32,6 +32,10 @@ export default {
 
 ### NOTES 
 
+#### Setup 
+
+##### Init
+
 This template was generated with 
 
 ```sh
@@ -39,6 +43,15 @@ pnpm create @vite-pwa/pwa . --template react-ts
 ```
 
 And selecting the default options.
+
+
+##### Shadcn
+
+Installed following the documentation here. 
+https://ui.shadcn.com/docs/installation/vite
+
+On step (7), the shadcn installer, 
+I selected all the default _except_ server components. 
 
 ### Troubleshooting
 
