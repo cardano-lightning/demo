@@ -19,8 +19,7 @@ function PWABadge() {
       }
       else if (r?.installing) {
         r.installing.addEventListener('statechange', (e) => {
-          /** @type {ServiceWorker} */
-          const sw = e.target
+          const sw = e.target as ServiceWorker
           if (sw.state === 'activated')
             registerPeriodicSync(period, swUrl, r)
         })
@@ -57,11 +56,8 @@ export default PWABadge
 
 /**
  * This function will register a periodic sync check every hour, you can modify the interval as needed.
- * @param period {number}
- * @param swUrl {string}
- * @param r {ServiceWorkerRegistration}
  */
-function registerPeriodicSync(period, swUrl, r) {
+function registerPeriodicSync(period: number, swUrl: string, r: ServiceWorkerRegistration) {
   if (period <= 0) return
 
   setInterval(async () => {
