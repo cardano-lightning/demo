@@ -1,66 +1,178 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
 import appLogo from '/favicon.svg'
-import PWABadge from './PWABadge.tsx'
-import { Button } from '@/components/ui/button'
+import './App.css'
 
-/* Old school styling
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
-}
-@keyframes logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-}
-@media (prefers-reduced-motion: no-preference) {
-  a:nth-of-type(2) .logo {
-    animation: logo-spin infinite 20s linear;
-  }
-}
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card"
 
-.card {
-  padding: 2em;
+
+import { zodResolver } from "@hookform/resolvers/zod"
+import { useForm } from "react-hook-form"
+import { z } from "zod"
+
+import { Button } from "@/components/ui/button"
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form"
+import { Input } from "@/components/ui/input"
+import { useEffect, useState } from 'react'
+import { Table, TableBody, TableCell, TableRow } from './components/ui/table'
+
+
+type Account = {
+  name: string;
 }
-.read-the-docs {
-  color: #888;
-}
-<div>
-  <a href="https://vitejs.dev" target="_blank">
-    <img src={appLogo} className="h-24 p-6 filter drop-shadow-2xl" alt="cardano-lightning-demo logo" />
-  </a>
-  <a href="https://react.dev" target="_blank">
-    <img src={reactLogo} className="logo react" alt="React logo" />
-  </a>
-</div>
-*/
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [accountNameRegistered, setAccountNameRegistered] = useState<Account>();
+  const isConnected = ((accountNameRegistered === null || accountNameRegistered === undefined) ? false : true ); 
 
+  console.log(accountNameRegistered)
+  console.log(isConnected)
+  useEffect(() => {
+    const accountNameRegistered = localStorage.getItem('accountNameRegistered');
+    if (accountNameRegistered) {
+      setAccountNameRegistered({name: accountNameRegistered});
+    }
+    
+  }, []);
+
+  return (accountNameRegistered ? <HomePage account={accountNameRegistered} /> : <CreateAccountPage onRegistered={(account:Account) => setAccountNameRegistered(account) }/> )
+}
+
+type HomePagePageProps = {
+  account: Account
+};
+
+const transactions = [
+  {lastUpdated: "2 min ago", name: "Bob Dylan", amount: "$250.00" ,status: "Paid"}
+, {lastUpdated: "1h ago", name: "Restaurant La Fourchette", amount: "$50.00" ,status: "Paid"}
+, {lastUpdated: "Monday", name: "NetFlix", amount: "$19.00" ,status: "Paid"}
+, {lastUpdated: "Sunday", name: "Alice", amount: "$20.00" ,status: "Paid"}]
+
+
+export const HomePage : React.FC<HomePagePageProps> = ({account}) => {
   return (
-    <div className="max-w-screen-xl m-0 p-2 text-center">
-      <h1>cardano-lightning-demo</h1>
-      <div className="card">
-        <Button onClick={() => setCount((count) => count + 1)}>
-          Test count is {count}
-        </Button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-      <PWABadge />
-    </div>
+        <Card>
+        <CardContent style={{textAlign:"left"}}> 
+            <img src={appLogo} className="logo" alt="cardano-lightning-demo logo" />
+          <div>
+          <b>Account</b> : {account.name} 
+        </div>
+        <div> 
+        <b>Balance</b> : 0 ADA  
+          <Button size="sm" style={{margin:"5px"}}>+</Button>
+          <Button size="sm" style={{margin:"5px"}}>-</Button>
+        </div>
+        <div>
+          <b>Transactions</b>
+          <Table>
+            <TableBody>
+              {transactions.map((transaction) => (
+              <TableRow>
+                <TableCell className="font-medium">{transaction.name}</TableCell>
+                <TableCell className="font-small">{transaction.lastUpdated}</TableCell>
+                <TableCell>{transaction.status}</TableCell>
+                <TableCell className="text-right">{transaction.amount}</TableCell>
+              </TableRow>
+              ))}
+            </TableBody>
+          </Table> 
+          <Button style={{margin:"5px"}}>Pay</Button>
+          <Button style={{margin:"5px"}}>Bill</Button>
+        </div>
+          
+        </CardContent>
+        <CardFooter>
+        </CardFooter>
+      </Card>
   )
 }
 
-export default App
+type CreateAccountPageProps = {
+  onRegistered: (account:Account) => void 
+};
+
+export const CreateAccountPage : React.FC<CreateAccountPageProps> = ({onRegistered}) => {
+  return (
+    <Card>
+      <CardHeader>
+        <CardTitle>Welcome To The Cardano Ligntning Network</CardTitle>
+        <CardDescription className='place-content-center'>
+          <img src={appLogo} className="logo" alt="cardano-lightning-demo logo" />
+        </CardDescription>
+      </CardHeader>
+      <CardContent>
+        <CreateAccountForm onRegistered={onRegistered} />
+      </CardContent>
+      <CardFooter>
+      </CardFooter>
+    </Card>
+  )
+}
+
+const formSchema = z.object({
+  accountName: z.string().min(2, {
+    message: "Account Name must be at least 2 characters.",
+  }),
+})
+
+
+
+type CreateAccountFormProps = {
+  onRegistered: (account:Account) => void 
+};
+
+export const CreateAccountForm : React.FC<CreateAccountFormProps> = ({onRegistered}) => {
+  // 1. Define your form.
+  const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      accountName: "",
+    },
+  })
+
+  // 2. Define a submit handler.
+  function onSubmit(values: z.infer<typeof formSchema>) {
+    // Do something with the form values.
+    // ✅ This will be type-safe and validated.
+    console.log(values)
+    localStorage.setItem('accountNameRegistered', values.accountName);
+    onRegistered({name:values.accountName});
+  }
+
+  return (
+    <Form {...form}>
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+        <FormField
+          control={form.control}
+          name="accountName"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Account Name</FormLabel>
+              <FormControl>
+                <Input placeholder="Your Account Name" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <Button type="submit">Create</Button>
+      </form>
+    </Form>
+  )
+}
+
+
+export default App;
+
