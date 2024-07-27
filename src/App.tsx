@@ -3,8 +3,7 @@ import reactLogo from './assets/react.svg'
 import appLogo from '/favicon.svg'
 import PWABadge from './PWABadge.tsx'
 import './App.css'
-
-import { Button } from "@/components/ui/button.tsx"
+import { Button } from '@/components/ui/button'
 
 
 function App() {
@@ -23,7 +22,7 @@ function App() {
       <h1>cardano-lightning-demo</h1>
       <div className="card">
         <Button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
+          Test count is {count}
         </Button>
         <p>
           Edit <code>src/App.tsx</code> and save to test HMR
