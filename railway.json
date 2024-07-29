@@ -4,5 +4,5 @@
     "nixpacksVersion": "1.21.2",
     "builder": "NIXPACKS",
     "nixpacksConfigFile": "nixpacks.toml"
-  },
+  }
 }
