@@ -41,10 +41,10 @@
             # Let's keep this "path discovery techinque" here for refernece:
             # (builtins.trace (builtins.attrNames inputs.cardano-addresses.packages.${system}) inputs.cardano-cli.packages)
             packages = with pkgs; [
-              nodePackages_latest.nodejs
-              nodePackages_latest.pnpm
+              nodePackages.nodejs
+              nodePackages.pnpm
               nodePackages.typescript
-              nodePackages_latest.typescript-language-server
+              nodePackages.typescript-language-server
             ];
           };
         };
