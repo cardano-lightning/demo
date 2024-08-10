@@ -7,6 +7,9 @@
     pre-commit-hooks-nix.url = "github:hercules-ci/pre-commit-hooks.nix/flakeModule";
     pre-commit-hooks-nix.inputs.nixpkgs.follows = "nixpkgs";
     treefmt-nix.url = "github:numtide/treefmt-nix";
+    cardano-addresses.url = "github:IntersectMBO/cardano-addresses";
+    cardano-cli.url = "github:IntersectMBO/cardano-cli";
+    bech32.url = "github:IntersectMBO/bech32";
   };
 
   outputs = inputs@{ flake-parts, ... }:
@@ -45,6 +48,10 @@
               nodePackages.pnpm
               nodePackages.typescript
               nodePackages.typescript-language-server
+
+              inputs.cardano-cli.packages.${system}."cardano-cli:exe:cardano-cli"
+              inputs.cardano-addresses.packages.${system}."cardano-addresses-cli:exe:cardano-address"
+              inputs.bech32.packages.${system}."bech32:exe:bech32"
             ];
           };
         };
