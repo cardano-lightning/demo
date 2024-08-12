@@ -1,7 +1,7 @@
 import { execSync } from 'child_process';
 import * as fs from 'fs';
 import { bech32 } from 'bech32';
-import { fromRecoveryPhrase } from '../../src/lib/cardanoAddress';
+import { fromRecoveryPhrase } from '../../src/lib/signingKeyPair';
 
 describe('Cardano Address Key Derivation', () => {
     const mnemonicSizes = [12, 15, 24];
@@ -18,13 +18,13 @@ describe('Cardano Address Key Derivation', () => {
                   const result = execSync('cat temp_mnemonic | cardano-address key from-recovery-phrase Shelley', { encoding: 'utf-8' });
                   fs.unlinkSync('temp_mnemonic');
 
-                  const cardanoAddressBech32 = result.trim();
-                  const { words } = bech32.decode(cardanoAddressBech32, 1000);
-                  const cardanoAddressBytes = Buffer.from(bech32.fromWords(words));
+                  const signingKeyPairBech32 = result.trim();
+                  const { words } = bech32.decode(signingKeyPairBech32, 1000);
+                  const signingKeyPairBytes = Buffer.from(bech32.fromWords(words));
 
                   const ourBytes = fromRecoveryPhrase(mnemonic);
 
-                  expect(ourBytes.hex()).toBe(cardanoAddressBytes.toString('hex'));
+                  expect(ourBytes.hex()).toBe(signingKeyPairBytes.toString('hex'));
               }
           });
         });

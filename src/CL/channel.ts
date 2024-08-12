@@ -1,10 +1,7 @@
-import { Ed25519PublicKey, Ed25519Signature } from '@cardano-sdk/crypto';
+import { Ed25519Signature } from '@cardano-sdk/crypto';
 import type { Tagged } from 'type-fest';
 import cbor from 'cbor-x';
-import { KeysManager, KeysManagerVault, mkKeysManager } from './keyManager';
-import { GetPassphrase, InvalidPassphrase, Mnemonic, PassphraseGetterError } from './secretManager';
-import * as cardanoAddress from './cardanoAddress';
-import { AccountIndex, KeyIndex, KeyRole, NormalPublicKey } from './cardanoAddress';
+// import * as signingKeyPair from '../lib/signingKeyPair';
 
 export type ChannelId = Tagged<Buffer, "ChannelId">;
 
@@ -79,12 +76,12 @@ export const deserializeChequeContent = (chequeCBOR: ChequeCBOR): ChequeContent 
   };
 }
 
-type ChequeValidationError = { type: "ChequeValidationError" };
+// type ChequeValidationError = { type: "ChequeValidationError" };
 
-export const verifyCheque = (chequeContent: ChequeContent, senderKey: NormalPublicKey): Cheque | ChequeValidationError => {
-  const chequeBytes = mkChequeBodyBytes(chequeContent.body);
-  if (!cardanoAddress.verify(senderKey, chequeContent.signature, chequeBytes)) {
-    return { type: "ChequeValidationError" };
-  }
-  return chequeContent as Cheque;
-}
+// export const verifyCheque = (chequeContent: ChequeContent, senderKey: VerificationKey): Cheque | ChequeValidationError => {
+//   const chequeBytes = mkChequeBodyBytes(chequeContent.body);
+//   if (!signingKeyPair.verify(senderKey, chequeContent.signature, chequeBytes)) {
+//     return { type: "ChequeValidationError" };
+//   }
+//   return chequeContent as Cheque;
+// }

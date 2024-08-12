@@ -1,5 +1,5 @@
 import { Buffer } from 'buffer';
-import { WalletIndex, KeyIndex, KeyRole } from '../../src/lib/cardanoAddress';
+import { WalletIndex, KeyIndex, KeyRole } from '../../src/lib/signingKeyPair';
 import { GetPassphrase, invalidPassphrase, mkGetPassphrase, Mnemonic } from '../../src/lib/secretManager';
 import { KeyDerivationPath, KeysManager, mkKeysManager, fromVault, keyNotFound } from '../../src/lib/keyManager';
 import * as bip39 from 'bip39';
@@ -31,8 +31,8 @@ describe('KeyManager', () => {
   });
 
   test('Key derivation', async () => {
-    expect(await keysManager.derive(testPath, getPassphrase, async (privateKey) => {
-      expect(privateKey).toBeDefined();
+    expect(await keysManager.derive(testPath, getPassphrase, async (signingKey) => {
+      expect(signingKey).toBeDefined();
       return true;
     })).toBe(true);
   });
@@ -43,9 +43,9 @@ describe('KeyManager', () => {
       { ...testPath, index: 1 as KeyIndex },
       { ...testPath, role: KeyRole.Internal }
     ];
-    expect(await keysManager.deriveMany(paths, getPassphrase, async (privateKeys) => {
-      expect(privateKeys).toHaveLength(3);
-      privateKeys.forEach(key => expect(key).toBeDefined());
+    expect(await keysManager.deriveMany(paths, getPassphrase, async (signingKeys) => {
+      expect(signingKeys).toHaveLength(3);
+      signingKeys.forEach(key => expect(key).toBeDefined());
       return true;
     })).toBe(true);
   });
@@ -76,15 +76,15 @@ describe('KeyManager', () => {
   });
 
   test('KeyManager serialization and deserialization', async () => {
-    const vault = keysManager.getVault();
-    const deserializedManager = fromVault(vault);
-
     const testMessage = Buffer.from('Another test message');
     const signature = await keysManager.sign(testPath, getPassphrase, testMessage);
 
     if ('type' in signature && (signature.type === 'InvalidPassphrase' || signature.type === 'PassphraseGetterError')) {
       throw new Error('Signing failed');
     }
+
+    const vault = keysManager.getVault();
+    const deserializedManager = fromVault(vault);
 
     expect(await deserializedManager.verify(testPath, testMessage, signature)).toBe(true);
   });
